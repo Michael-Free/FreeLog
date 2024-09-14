@@ -21,4 +21,17 @@ class FreeLog (
         throw "Initialization failed: $_"
       }
     }
+
+  [void] Log([string]$message) {
+    if (-not $this.IsValid) {
+      throw "Cannot execute LOG method because log file not writeable."
+    }
+    try {
+      $timestamp = (Get-Date).ToString("yyyy-MM-dd HH:mm:ss")
+      $logEntry = "LOG - $timestamp - $message"
+      Add-Content -Path $this.LogFilePath -Value $logEntry
+    } catch {
+      throw "LOG method failure: $_"
+    }
+  }
 )
