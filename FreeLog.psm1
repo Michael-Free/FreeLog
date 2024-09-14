@@ -14,8 +14,8 @@ class FreeLog (
 
   [void]EnsureLogFileExists() {
     if (-not $this.IsValidParam($this.LogFilePath)) {
-        $this.IsValid = $false
-        throw "LogFilePath cannot be null or empty."
+      $this.IsValid = $false
+      throw "LogFilePath cannot be null or empty."
     }
     if (-not (Test-Path -Path $this.LogFilePath)) {
       try {
