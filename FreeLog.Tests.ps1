@@ -7,7 +7,8 @@ Describe "FreeLog Initializing Tests" {
     Register-EngineEvent PowerShell.Exiting -SupportEvent -Action { Remove-Item -Path $testFilePath -ErrorAction SilentlyContinue }
     }
     It "should throw an error if LogFilePath is null" {
-    
+      $logger = [MyClass]::new($null)
+      { $logger.EnsureLogFileExists() } | Should -Throw "LogFilePath cannot be null or empty."
     }
     It "should throw an error if LogFilePath is empty" {
     
