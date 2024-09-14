@@ -8,7 +8,15 @@ class FreeLog (
     $this:EnsureLogFileExists()
   }
 
+  [bool]IsValidParam([string]$param) {
+    return -not [string]::IsNullOrEmpty($param)
+  }
+
   [void]EnsureLogFileExists() {
+    if (-not $this.IsValidParam($this.LogFilePath)) {
+        $this.IsValid = $false
+        throw "LogFilePath cannot be null or empty."
+    }
     if (-not (Test-Path -Path $this.LogFilePath)) {
       try {
         New-Item -Path $this.LogFilePath -ItemType File -Force
