@@ -47,4 +47,17 @@ class FreeLog (
       throw "WARN method failure: $_"
     }
   }
+
+  [void] Error([string]$message) {
+    if (-not $this.IsValid) {
+      throw "Cannot execute ERROR method because log file not writeable."
+    }
+    try {
+      $timestamp = (Get-Date).ToString("yyyy-MM-dd HH:mm:ss")
+      $logEntry = "ERROR - $timestamp - $message"
+      Add-Content -Path $this.LogFilePath -Value $logEntry
+    } catch {
+      throw "ERROR method failure: $_"
+    }
+  }
 )
