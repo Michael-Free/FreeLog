@@ -30,6 +30,7 @@ class FreeLog (
       $timestamp = (Get-Date).ToString("yyyy-MM-dd HH:mm:ss")
       $logEntry = "LOG - $timestamp - $message"
       Add-Content -Path $this.LogFilePath -Value $logEntry
+      $this.IsValid = $true
     } catch {
       $this.IsValid = $false
       throw "LOG method failure: $_"
@@ -44,6 +45,7 @@ class FreeLog (
       $timestamp = (Get-Date).ToString("yyyy-MM-dd HH:mm:ss")
       $logEntry = "WARNING - $timestamp - $message"
       Add-Content -Path $this.LogFilePath -Value $logEntry
+      $this.IsValid = $true
     } catch {
       $this.IsValid = $false
       throw "WARN method failure: $_"
@@ -58,6 +60,7 @@ class FreeLog (
       $timestamp = (Get-Date).ToString("yyyy-MM-dd HH:mm:ss")
       $logEntry = "ERROR - $timestamp - $message"
       Add-Content -Path $this.LogFilePath -Value $logEntry
+      $this.IsValid = $true
     } catch {
       $this.IsValid = $false
       throw "ERROR method failure: $_"
@@ -72,6 +75,7 @@ class FreeLog (
       $timestamp = (Get-Date).ToString("yyyy-MM-dd HH:mm:ss")
       $logEntry = "FAIL - $timestamp - $message"
       Add-Content -Path $this.LogFilePath -Value $logEntry
+      $this.IsValid = $true
     } catch {
       $this.IsValid = $false
       throw "FAIL method failure: $_"
