@@ -31,6 +31,7 @@ class FreeLog (
       $logEntry = "LOG - $timestamp - $message"
       Add-Content -Path $this.LogFilePath -Value $logEntry
     } catch {
+      $this.IsValid = $false
       throw "LOG method failure: $_"
     }
   }
@@ -44,6 +45,7 @@ class FreeLog (
       $logEntry = "WARNING - $timestamp - $message"
       Add-Content -Path $this.LogFilePath -Value $logEntry
     } catch {
+      $this.IsValid = $false
       throw "WARN method failure: $_"
     }
   }
@@ -57,6 +59,7 @@ class FreeLog (
       $logEntry = "ERROR - $timestamp - $message"
       Add-Content -Path $this.LogFilePath -Value $logEntry
     } catch {
+      $this.IsValid = $false
       throw "ERROR method failure: $_"
     }
   }
@@ -70,6 +73,7 @@ class FreeLog (
       $logEntry = "FAIL - $timestamp - $message"
       Add-Content -Path $this.LogFilePath -Value $logEntry
     } catch {
+      $this.IsValid = $false
       throw "FAIL method failure: $_"
     }
   }
