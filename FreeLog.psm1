@@ -115,7 +115,7 @@ function Write-Log() {
         [string]$Warn,
 
         [Parameter(Mandatory=$true, ParameterSetName="ErrParam")]
-        [string]$Error
+        [string]$Error,
 
         [Parameter(Mandatory=$true, ParameterSetName="FailParam")]
         [string]$Fail
@@ -127,16 +127,16 @@ function Write-Log() {
 
     switch ($PSCmdlet.ParameterSetName) {
         "LogParam" {
-                $logger.Log($Log)
+                $global:logger.Log($Log)
             }
         "WarnParam" {
-                $logger.Warn($Warn)
+                $global:logger.Warn($Warn)
             }
         "ErrParam" {
-                $logger.Error($Error)
+                $global:logger.Error($Error)
             }
         "FailParam" {
-                $logger.Fail($Fail)
+                $global:logger.Fail($Fail)
             }
     }
 }
