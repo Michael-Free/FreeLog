@@ -115,7 +115,7 @@ function Write-Log() {
         [string]$Warn,
 
         [Parameter(Mandatory=$true, ParameterSetName="ErrParam")]
-        [string]$Error,
+        [string]$Err,
 
         [Parameter(Mandatory=$true, ParameterSetName="FailParam")]
         [string]$Fail
@@ -133,7 +133,7 @@ function Write-Log() {
                 $global:logger.Warn($Warn)
             }
         "ErrParam" {
-                $global:logger.Error($Error)
+                $global:logger.Error($Err)
             }
         "FailParam" {
                 $global:logger.Fail($Fail)
