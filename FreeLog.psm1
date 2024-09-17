@@ -96,3 +96,11 @@ class FreeLog {
     }
 }
 
+function Create-Log() {
+    ### Create a log file and set params
+}
+
+function Write-Log() {
+    #write to log file, create params - Error, Warn, Fail, 
+
+}
