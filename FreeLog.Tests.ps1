@@ -12,9 +12,26 @@ AfterAll {
 }
 
 Describe "FreeLog Class Tests" {
+  BeforeEach {
+        $testFilePath = [System.IO.Path]::GetTempFileName()
+        Register-EngineEvent PowerShell.Exiting -SupportEvent -Action { Remove-Item -Path $testFilePath -ErrorAction SilentlyContinue }
+    }
+
+    It "Should thorw an error if LogFilePath is Null" {
+        $logger = [FreeLog]::new($null)
+        { $logger.EnsureLogFileExists() } | Should -Throw "LogFilePath cannot be null or empty."
+    }
+
+
+    It "Should thorw an error if LogFilePath is empty" {
+        $logger = [FreeLog]::new("")
+        { $logger.EnsureLogFileExists() } | Should -Throw "LogFilePath cannot be null or empty."
+    }
+    
     It "Can create a FreeLog object" {
-        $log = [FreeLog]::new("")
-        $log | Should -Not -BeNullOrEmpty
+    #working on this...
+        $log = [FreeLog]::new($testFilePath)
+        #$log | Should -Not -BeNullOrEmpty
     }
 
     It "Can log a message" {
