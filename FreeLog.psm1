@@ -96,13 +96,13 @@ class FreeLog {
     }
 }
 
-function Create-Log() {
+function Create-LogFile() {
     Param(
         [Parameter(Mandatory=$true)]
         [string]$Path
     )
-    
     $logger = [FreeLog]::new($Path)
+    Set-Variable -Name "logger" -Value $logger -Scope Global
 }
 
 function Write-Log() {
