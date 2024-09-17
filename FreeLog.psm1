@@ -20,7 +20,7 @@ class FreeLog {
             try {
                 New-Item -Path $this.LogFilePath -ItemType File -Force
                 $timestamp = (Get-Date).ToString("yyyy-MM-dd HH:mm:ss")
-                $logEntry = "CREATED - $timestamp - Log File Created..."
+                $logEntry = "CREATED  - $timestamp - Log File Created..."
                 Add-Content -Path $this.LogFilePath -Value $logEntry
                 Write-Verbose $logEntry
                 $this.IsValid = $true
@@ -37,7 +37,7 @@ class FreeLog {
         }
         try {
             $timestamp = (Get-Date).ToString("yyyy-MM-dd HH:mm:ss")
-            $logEntry = "LOG - $timestamp - $message"
+            $logEntry = "LOG      - $timestamp - $message"
             Add-Content -Path $this.LogFilePath -Value $logEntry
             Write-Verbose $logEntry
             $this.IsValid = $true
@@ -53,7 +53,7 @@ class FreeLog {
         }
         try {
             $timestamp = (Get-Date).ToString("yyyy-MM-dd HH:mm:ss")
-            $logEntry = "WARNING - $timestamp - $message"
+            $logEntry = "WARN     - $timestamp - $message"
             Add-Content -Path $this.LogFilePath -Value $logEntry
             Write-Verbose $logEntry
             $this.IsValid = $true
@@ -69,7 +69,7 @@ class FreeLog {
         }
         try {
             $timestamp = (Get-Date).ToString("yyyy-MM-dd HH:mm:ss")
-            $logEntry = "ERROR - $timestamp - $message"
+            $logEntry = "ERROR    - $timestamp - $message"
             Add-Content -Path $this.LogFilePath -Value $logEntry
             Write-Verbose $logEntry
             $this.IsValid = $true
@@ -85,7 +85,7 @@ class FreeLog {
         }
         try {
             $timestamp = (Get-Date).ToString("yyyy-MM-dd HH:mm:ss")
-            $logEntry = "FAIL - $timestamp - $message"
+            $logEntry = "FAIL     - $timestamp - $message"
             Add-Content -Path $this.LogFilePath -Value $logEntry
             Write-Verbose $logEntry
             $this.IsValid = $true
@@ -97,7 +97,12 @@ class FreeLog {
 }
 
 function Create-Log() {
-    ### Create a log file and set params
+    Param(
+        [Parameter(Mandatory=$true)]
+        [string]$Path
+    )
+    
+    $log = [FreeLog]::new($Path)
 }
 
 function Write-Log() {
