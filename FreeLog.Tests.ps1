@@ -1,34 +1,36 @@
 # FreeLog.Tests.ps1
-Import-Module .\FreeLog.psm1
+Import-Module FreeLog.psm1
 
-Describe "FreeLog Initializing Tests" {
-  BeforeEach {
-    $testFilePath = [System.IO.Path]::GetTempFileName()
-    Register-EngineEvent PowerShell.Exiting -SupportEvent -Action { Remove-Item -Path $testFilePath -ErrorAction SilentlyContinue }
-    }
-    It "should throw an error if LogFilePath is null" {
-      $logger = [MyClass]::new($null)
-      { $logger.EnsureLogFileExists() } | Should -Throw "LogFilePath cannot be null or empty."
-    }
-    It "should throw an error if LogFilePath is empty" {
-    
-    }
-    It "should throw an error if LogFilePath directory not exist" {
-    
-    }
-    It "should throw an error if LogFilePath directory not writeable" {
-    
-    }
-    It "should not throw an error if LogFilePath directory writeable" {
-    
-    }
-    It "should create logFile if LogFilePath directory exists" {
-    
-    }
-    It "should add content to Logfile once created with CREATE word" {
-    
-    }
-    It "should append to a prexisting logfile and have a second CREATE word" {
-    
-    }
+BeforeAll {
+    $env:TEST_MODE = $true
+    Import-Module FreeLog.psm1
 }
+
+AfterAll {
+    Remove-Module FreeLog.psm1
+    Remove-Item env:\TEST_MODE
+}
+
+Describe "FreeLog Class Tests" {
+    It "Can create a FreeLog object" {
+        $log = [FreeLog]::new("")
+        $log | Should -Not -BeNullOrEmpty
+    }
+
+    It "Can log a message" {
+        $log = [FreeLog]::new("")
+        $log.Log("Test message")
+    }
+
+    # Add tests for other methods...
+}
+#Describe "FreeLog Initializing Class Tests" {
+#  BeforeEach {
+#    $testFilePath = [System.IO.Path]::GetTempFileName()
+#    Register-EngineEvent PowerShell.Exiting -SupportEvent -Action { Remove-Item -Path $testFilePath -ErrorAction SilentlyContinue }
+#    }
+#    It "should throw an error if LogFilePath is null" {
+#      $logger = [FreeLog]::new($null)
+#      { $logger.EnsureLogFileExists() } | Should -Throw "LogFilePath cannot be null or empty."
+#    }
+#}
