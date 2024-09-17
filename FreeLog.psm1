@@ -102,10 +102,41 @@ function Create-Log() {
         [string]$Path
     )
     
-    $log = [FreeLog]::new($Path)
+    $logger = [FreeLog]::new($Path)
 }
 
 function Write-Log() {
-    #write to log file, create params - Error, Warn, Fail, 
+    [CmdletBinding(DefaultParameterSetName="None")]
+    Param (
+        [Parameter(Mandatory=$true, ParameterSetName="LogParam")]
+        [string]$Log,
 
+        [Parameter(Mandatory=$true, ParameterSetName="WarnParam")]
+        [string]$Warn,
+
+        [Parameter(Mandatory=$true, ParameterSetName="ErrParam")]
+        [string]$Error
+
+        [Parameter(Mandatory=$true, ParameterSetName="FailParam")]
+        [string]$Fail
+    )
+
+    if ($PSCmdlet.ParameterSetName -eq "None") {
+        throw "You must provide one parameter: -Log, -Warn, -Error, or -Fail."
+    }
+
+    switch ($PSCmdlet.ParameterSetName) {
+        "LogParam" {
+                $logger.Log($Log)
+            }
+        "WarnParam" {
+                $logger.Warn($Warn)
+            }
+        "ErrParam" {
+                $logger.Error($Error)
+            }
+        "FailParam" {
+                $logger.Fail($Fail)
+            }
+    }
 }
