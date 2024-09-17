@@ -105,7 +105,7 @@ function Create-LogFile() {
     Set-Variable -Name "logger" -Value $logger -Scope Global
 }
 
-function Write-Log() {
+function Write-LogFile() {
     [CmdletBinding(DefaultParameterSetName="None")]
     Param (
         [Parameter(Mandatory=$true, ParameterSetName="LogParam")]
