@@ -120,6 +120,9 @@ function Write-Log() {
         [Parameter(Mandatory=$true, ParameterSetName="FailParam")]
         [string]$Fail
     )
+    if ($null -eq $global:logger) {
+        throw "Logger not initialized. Run Create-LogFile first."
+    }
 
     if ($PSCmdlet.ParameterSetName -eq "None") {
         throw "You must provide one parameter: -Log, -Warn, -Error, or -Fail."
