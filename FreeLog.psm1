@@ -1,3 +1,5 @@
+$logger = $null
+
 class FreeLog {
     [bool]$IsValid = $true
     [string]$LogFilePath
@@ -105,7 +107,7 @@ function New-LogFile() {
 
     if ($PSCmdlet.ShouldProcess($Path, "Creating log file")) {
         $logger = [FreeLog]::new($Path)
-        Set-Variable -Name "logger" -Value $logger -Scope Global
+        #Set-Variable -Name "logger" -Value $logger -Scope Global
     }
 }
 
@@ -124,7 +126,7 @@ function Write-LogFile() {
         [Parameter(Mandatory=$true, ParameterSetName="FailParam")]
         [string]$Fail
     )
-    if ($null -eq $global:logger) {
+    if ($null -eq $logger) {
         throw "Logger not initialized. Run New-LogFile first."
     }
 
@@ -134,16 +136,16 @@ function Write-LogFile() {
 
     switch ($PSCmdlet.ParameterSetName) {
         "LogParam" {
-                $global:logger.Log($Log)
+                $logger.Log($Log)
             }
         "WarnParam" {
-                $global:logger.Warn($Warn)
+                $logger.Warn($Warn)
             }
         "ErrParam" {
-                $global:logger.Error($Err)
+                $logger.Error($Err)
             }
         "FailParam" {
-                $global:logger.Fail($Fail)
+                $logger.Fail($Fail)
             }
     }
 }
