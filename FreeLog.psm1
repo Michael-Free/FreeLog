@@ -96,13 +96,17 @@ class FreeLog {
     }
 }
 
-function Create-LogFile() {
+function New-LogFile() {
+    [CmdletBinding(SupportsShouldProcess=$true)]
     Param(
         [Parameter(Mandatory=$true)]
         [string]$Path
     )
-    $logger = [FreeLog]::new($Path)
-    Set-Variable -Name "logger" -Value $logger -Scope Global
+
+    if ($PSCmdlet.ShouldProcess($Path, "Creating log file")) {
+        $logger = [FreeLog]::new($Path)
+        Set-Variable -Name "logger" -Value $logger -Scope Global
+    }
 }
 
 function Write-LogFile() {
@@ -121,7 +125,7 @@ function Write-LogFile() {
         [string]$Fail
     )
     if ($null -eq $global:logger) {
-        throw "Logger not initialized. Run Create-LogFile first."
+        throw "Logger not initialized. Run New-LogFile first."
     }
 
     if ($PSCmdlet.ParameterSetName -eq "None") {
