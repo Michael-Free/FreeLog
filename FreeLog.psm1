@@ -106,8 +106,7 @@ function New-LogFile() {
     )
 
     if ($PSCmdlet.ShouldProcess($Path, "Creating log file")) {
-        $logger = [FreeLog]::new($Path)
-        #Set-Variable -Name "logger" -Value $logger -Scope Global
+        $script:logger = [FreeLog]::new($Path)
     }
 }
 
@@ -136,16 +135,16 @@ function Write-LogFile() {
 
     switch ($PSCmdlet.ParameterSetName) {
         "LogParam" {
-                $logger.Log($Log)
+                $script:logger.Log($Log)
             }
         "WarnParam" {
-                $logger.Warn($Warn)
+                $script:logger.Warn($Warn)
             }
         "ErrParam" {
-                $logger.Error($Err)
+                $script:logger.Error($Err)
             }
         "FailParam" {
-                $logger.Fail($Fail)
+                $script:logger.Fail($Fail)
             }
     }
 }
