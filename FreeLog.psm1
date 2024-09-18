@@ -26,6 +26,7 @@ class FreeLog {
                 Add-Content -Path $this.LogFilePath -Value $logEntry
                 Write-Verbose $logEntry
                 $this.IsValid = $true
+                $this.LogFilePath
             } catch {
                 $this.IsValid = $false
                 throw "Initialization failed: $_"
@@ -98,19 +99,31 @@ class FreeLog {
     }
 }
 
-function New-LogFile() {
+
+function New-LogFile {
     [CmdletBinding(SupportsShouldProcess=$true)]
     Param(
         [Parameter(Mandatory=$true)]
         [string]$Path
     )
 
-    if ($PSCmdlet.ShouldProcess($Path, "Creating log file")) {
-        $script:logger = [FreeLog]::new($Path)
+    if (-not [string]::IsNullOrEmpty($Path)) {
+
+        if ($PSCmdlet.ShouldProcess($Path, "Creating log file")) {
+
+            $script:logger = [FreeLog]::new($Path)
+
+            if (-not (Test-Path -Path $Path)) {
+                New-Item -Path $Path -ItemType File -Force
+            }
+        }
+    } else {
+        throw "Path cannot be null or empty."
     }
 }
 
-function Write-LogFile() {
+
+function Write-LogFile {
     [CmdletBinding(DefaultParameterSetName="None")]
     Param (
         [Parameter(Mandatory=$true, ParameterSetName="LogParam")]
@@ -125,26 +138,31 @@ function Write-LogFile() {
         [Parameter(Mandatory=$true, ParameterSetName="FailParam")]
         [string]$Fail
     )
-    if ($null -eq $logger) {
-        throw "Logger not initialized. Run New-LogFile first."
+
+    # Check if the logger is initialized
+    if ($null -eq $script:logger) {
+        throw [System.Exception] "Logger not initialized. Run New-LogFile first."
     }
 
+    # Ensure one of the parameters is provided
     if ($PSCmdlet.ParameterSetName -eq "None") {
         throw "You must provide one parameter: -Log, -Warn, -Error, or -Fail."
     }
 
+    # Handle logging based on the parameter set
     switch ($PSCmdlet.ParameterSetName) {
         "LogParam" {
-                $script:logger.Log($Log)
-            }
+            $script:logger.Log($Log)
+        }
         "WarnParam" {
-                $script:logger.Warn($Warn)
-            }
+            $script:logger.Warn($Warn)
+        }
         "ErrParam" {
-                $script:logger.Error($Err)
-            }
+            $script:logger.Error($Err)
+        }
         "FailParam" {
-                $script:logger.Fail($Fail)
-            }
+            $script:logger.Fail($Fail)
+        }
     }
 }
+
