@@ -140,7 +140,7 @@ function Write-LogFile {
     )
 
     if ($null -eq $script:logger) {
-        throw [System.Exception] "Logger not initialized. Run New-LogFile first."
+        throw "Logger not initialized. Run New-LogFile first."
     }
 
     if ($PSCmdlet.ParameterSetName -eq "None") {
