@@ -1,53 +1,59 @@
 # FreeLog.Tests.ps1
-Import-Module FreeLog.psm1
 
-BeforeAll {
-    $env:TEST_MODE = $true
-    Import-Module FreeLog.psm1
-}
-
-AfterAll {
-    Remove-Module FreeLog.psm1
-    Remove-Item env:\TEST_MODE
-}
+Import-Module "/home/michael/.local/share/powershell/Modules/FreeLog/FreeLog.psm1"
 
 Describe "FreeLog Class Tests" {
-  BeforeEach {
-        $testFilePath = [System.IO.Path]::GetTempFileName()
-        Register-EngineEvent PowerShell.Exiting -SupportEvent -Action { Remove-Item -Path $testFilePath -ErrorAction SilentlyContinue }
-    }
-
-    It "Should thorw an error if LogFilePath is Null" {
-        $logger = [FreeLog]::new($null)
-        { $logger.EnsureLogFileExists() } | Should -Throw "LogFilePath cannot be null or empty."
-    }
-
-
-    It "Should thorw an error if LogFilePath is empty" {
-        $logger = [FreeLog]::new("")
-        { $logger.EnsureLogFileExists() } | Should -Throw "LogFilePath cannot be null or empty."
-    }
     
-    It "Can create a FreeLog object" {
-    #working on this...
-        $log = [FreeLog]::new($testFilePath)
-        #$log | Should -Not -BeNullOrEmpty
-    }
+    InModuleScope FreeLog {
+        
+        BeforeEach {
+            $testFilePath = Join-Path -Path "/tmp" -ChildPath (New-Guid).Guid + ".log"
+            Register-EngineEvent PowerShell.Exiting -SupportEvent -Action { Remove-Item -Path $testFilePath -ErrorAction SilentlyContinue }
+        }
 
-    It "Can log a message" {
-        $log = [FreeLog]::new("")
-        $log.Log("Test message")
-    }
+        AfterEach {
+            if (Test-Path $testFilePath) {
+                Remove-Item -Path $testFilePath -ErrorAction SilentlyContinue
+            }
+        }
 
-    # Add tests for other methods...
+        It "Should throw an error if LogFilePath is null" {
+            { [FreeLog]::new($null) } | Should -Throw "LogFilePath cannot be null or empty."
+        }
+
+        It "Should throw an error if LogFilePath is empty" {
+            { [FreeLog]::new("") } | Should -Throw "LogFilePath cannot be null or empty."
+        }
+
+        It "Can create a FreeLog object with a valid path" {
+            $logger = [FreeLog]::new($testFilePath)
+            $logger | Should -Not -BeNullOrEmpty
+            $logger.LogFilePath | Should -Be $testFilePath
+        }
+
+        It "Can create a log entry in the log file" {
+            $logger = [FreeLog]::new($testFilePath)
+            $logger.Log("Test message")
+
+            $content = Get-Content $testFilePath -Raw
+            $content | Should -Match "Test message"
+       }
+
+       #It "Should throw an error when attempting to log to an invalid file path" {
+       #    $logger = [FreeLog]::new("/invalid/path/to/logfile.log")
+       #    { $logger.Log("This should fail") } | Should -Throw
+       #}
+
+       It "Can log warnings and errors" {
+           $logger = [FreeLog]::new($testFilePath)
+           $logger.Warn("This is a warning")
+           $logger.Error("This is an error")
+
+           $content = Get-Content $testFilePath -Raw
+           $content | Should -Match "WARN     -"
+           $content | Should -Match "This is a warning"
+           $content | Should -Match "ERROR    -"
+           $content | Should -Match "This is an error"
+       }
+    }
 }
-#Describe "FreeLog Initializing Class Tests" {
-#  BeforeEach {
-#    $testFilePath = [System.IO.Path]::GetTempFileName()
-#    Register-EngineEvent PowerShell.Exiting -SupportEvent -Action { Remove-Item -Path $testFilePath -ErrorAction SilentlyContinue }
-#    }
-#    It "should throw an error if LogFilePath is null" {
-#      $logger = [FreeLog]::new($null)
-#      { $logger.EnsureLogFileExists() } | Should -Throw "LogFilePath cannot be null or empty."
-#    }
-#}
