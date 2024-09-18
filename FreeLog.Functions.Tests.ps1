@@ -29,7 +29,7 @@ Describe "FreeLog Function Tests" {
     }
 
     #It "Write-LogFile should throw an error if logger is not initialized" {
-    #    $script:logger = $null
+    #    #$script:logger = $null
     #    { Write-LogFile -Log "This should fail" } | Should -Throw "Logger not initialized. Run New-LogFile first."
     #}
 

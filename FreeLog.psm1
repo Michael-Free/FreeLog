@@ -139,17 +139,14 @@ function Write-LogFile {
         [string]$Fail
     )
 
-    # Check if the logger is initialized
     if ($null -eq $script:logger) {
         throw [System.Exception] "Logger not initialized. Run New-LogFile first."
     }
 
-    # Ensure one of the parameters is provided
     if ($PSCmdlet.ParameterSetName -eq "None") {
         throw "You must provide one parameter: -Log, -Warn, -Error, or -Fail."
     }
 
-    # Handle logging based on the parameter set
     switch ($PSCmdlet.ParameterSetName) {
         "LogParam" {
             $script:logger.Log($Log)
