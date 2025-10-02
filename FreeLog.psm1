@@ -27,7 +27,8 @@ class FreeLog {
                 Write-Verbose $logEntry
                 $this.IsValid = $true
                 $this.LogFilePath
-            } catch {
+            } 
+            catch {
                 $this.IsValid = $false
                 throw "Initialization failed: $_"
             }
@@ -60,7 +61,8 @@ class FreeLog {
             Add-Content -Path $this.LogFilePath -Value $logEntry
             Write-Verbose $logEntry
             $this.IsValid = $true
-        } catch {
+        } 
+        catch {
             $this.IsValid = $false
             throw "WARN method failure: $_"
         }
@@ -76,7 +78,8 @@ class FreeLog {
             Add-Content -Path $this.LogFilePath -Value $logEntry
             Write-Verbose $logEntry
             $this.IsValid = $true
-        } catch {
+        } 
+        catch {
             $this.IsValid = $false
             throw "ERROR method failure: $_"
         }
@@ -92,7 +95,8 @@ class FreeLog {
             Add-Content -Path $this.LogFilePath -Value $logEntry
             Write-Verbose $logEntry
             $this.IsValid = $true
-        } catch {
+        }
+        catch {
             $this.IsValid = $false
             throw "FAIL method failure: $_"
         }
@@ -106,59 +110,50 @@ function New-LogFile {
         [Parameter(Mandatory=$true)]
         [string]$Path
     )
-
     if (-not [string]::IsNullOrEmpty($Path)) {
-
         if ($PSCmdlet.ShouldProcess($Path, "Creating log file")) {
-
             $script:logger = [FreeLog]::new($Path)
-
             if (-not (Test-Path -Path $Path)) {
                 New-Item -Path $Path -ItemType File -Force
             }
         }
-    } else {
+    } 
+    else {
         throw "Path cannot be null or empty."
     }
 }
 
 
 function Write-LogFile {
-    [CmdletBinding(DefaultParameterSetName="None")]
+    [CmdletBinding(DefaultParameterSetName="LogParam")]
     Param (
-        [Parameter(Mandatory=$true, ParameterSetName="LogParam")]
+        [Parameter(Mandatory=$true, ParameterSetName="LogParam", ValueFromPipeline=$true)]
         [string]$Log,
-
-        [Parameter(Mandatory=$true, ParameterSetName="WarnParam")]
+        [Parameter(Mandatory=$true, ParameterSetName="WarnParam", ValueFromPipeline=$true)]
         [string]$Warn,
-
-        [Parameter(Mandatory=$true, ParameterSetName="ErrParam")]
+        [Parameter(Mandatory=$true, ParameterSetName="ErrParam", ValueFromPipeline=$true)]
         [string]$Err,
-
-        [Parameter(Mandatory=$true, ParameterSetName="FailParam")]
+        [Parameter(Mandatory=$true, ParameterSetName="FailParam", ValueFromPipeline=$true)]
         [string]$Fail
     )
-
-    if ($null -eq $script:logger) {
-        throw "Logger not initialized. Run New-LogFile first."
-    }
-
-    if ($PSCmdlet.ParameterSetName -eq "None") {
-        throw "You must provide one parameter: -Log, -Warn, -Error, or -Fail."
-    }
-
-    switch ($PSCmdlet.ParameterSetName) {
-        "LogParam" {
-            $script:logger.Log($Log)
+    process {
+        if ($null -eq $script:logger) {
+            throw "Logger not initialized. Run New-LogFile first."
         }
-        "WarnParam" {
-            $script:logger.Warn($Warn)
-        }
-        "ErrParam" {
-            $script:logger.Error($Err)
-        }
-        "FailParam" {
-            $script:logger.Fail($Fail)
+
+        switch ($PSCmdlet.ParameterSetName) {
+            "LogParam"  { 
+                $script:logger.Log($Log) 
+            }
+            "WarnParam" { 
+                $script:logger.Warn($Warn) 
+            }
+            "ErrParam"  { 
+                $script:logger.Error($Err) 
+            }
+            "FailParam" { 
+                $script:logger.Fail($Fail) 
+            }
         }
     }
 }
