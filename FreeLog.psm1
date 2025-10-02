@@ -125,35 +125,34 @@ function New-LogFile {
 
 
 function Write-LogFile {
-    [CmdletBinding(DefaultParameterSetName="LogParam")]
+    [CmdletBinding()]
     Param (
-        [Parameter(Mandatory=$true, ParameterSetName="LogParam", ValueFromPipeline=$true)]
-        [string]$Log,
-        [Parameter(Mandatory=$true, ParameterSetName="WarnParam", ValueFromPipeline=$true)]
-        [string]$Warn,
-        [Parameter(Mandatory=$true, ParameterSetName="ErrParam", ValueFromPipeline=$true)]
-        [string]$Err,
-        [Parameter(Mandatory=$true, ParameterSetName="FailParam", ValueFromPipeline=$true)]
-        [string]$Fail
+        [Parameter(Mandatory=$true, ValueFromPipeline=$true)]
+        [string]$Message,
+        
+        [Parameter(Mandatory=$false)]
+        [switch]$Warn,
+        
+        [Parameter(Mandatory=$false)]
+        [switch]$Error,
+        
+        [Parameter(Mandatory=$false)]
+        [switch]$Fail
     )
+    
     process {
         if ($null -eq $script:logger) {
             throw "Logger not initialized. Run New-LogFile first."
         }
 
-        switch ($PSCmdlet.ParameterSetName) {
-            "LogParam"  { 
-                $script:logger.Log($Log) 
-            }
-            "WarnParam" { 
-                $script:logger.Warn($Warn) 
-            }
-            "ErrParam"  { 
-                $script:logger.Error($Err) 
-            }
-            "FailParam" { 
-                $script:logger.Fail($Fail) 
-            }
+        if ($Fail) {
+            $script:logger.Fail($Message)
+        } elseif ($Error) {
+            $script:logger.Error($Message)
+        } elseif ($Warn) {
+            $script:logger.Warn($Message)
+        } else {
+            $script:logger.Log($Message)
         }
     }
 }
